@@ -19,8 +19,8 @@ ADD_DEFINITIONS(-DQ_SPY)
 ADD_EXECUTABLE(gps_importer
   main.cpp
   bsp.cpp
-  philo.cpp
-  table.cpp
+  io_mgr.cpp
+  database.cpp
   ${QTOOLS}/qspy/source/qspy.c)
 
 TARGET_LINK_LIBRARIES(gps_importer

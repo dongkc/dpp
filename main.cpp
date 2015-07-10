@@ -1,5 +1,5 @@
 #include "qpcpp.h"
-#include "dpp.h"
+#include "app.h"
 #include "bsp.h"
 
 #define MAX_QEVT_NUM 1000
@@ -7,9 +7,9 @@
 int main() {
     static QP::QEvt const *io_queue[MAX_QEVT_NUM];
     static QP::QEvt const *process_queue[MAX_QEVT_NUM];
-    static QP::QSubscrList subscrSto[DPP::MAX_PUB_SIG];
+    static QP::QSubscrList subscrSto[MAX_QEVT_NUM];
 
-    static QF_MPOOL_EL(DPP::FrameEvt) smlPoolSto[MAX_QEVT_NUM];
+    static QF_MPOOL_EL(FrameEvt) smlPoolSto[MAX_QEVT_NUM];
 
 
     QP::QF::init();  // initialize the framework and the underlying RT kernel
@@ -25,10 +25,10 @@ int main() {
     QP::QF::poolInit(smlPoolSto,
                      sizeof(smlPoolSto), sizeof(smlPoolSto[0]));
 
-    DPP::AO_iomgr->start(0,
-                           process_queue, Q_DIM(process_queue),
-                           (void *)0, 0U);
-    DPP::AO_database->start(1,
+    AO_iomgr->start(0,
+                      process_queue, Q_DIM(process_queue),
+                      (void *)0, 0U);
+    AO_database->start(1,
                     io_queue, Q_DIM(io_queue),
                     (void *)0, 0U);
 

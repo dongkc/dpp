@@ -26,13 +26,6 @@ static uint32_t l_rnd; // random seed
 
 //............................................................................
 void BSP_init(void) {
-    printf("Dining Philosopher Problem example"
-           "\nQP %s\n"
-           "Press p to pause the forks\n"
-           "Press s to serve the forks\n"
-           "Press ESC to quit...\n",
-           QP::QF::getVersion());
-
     BSP_randomSeed(1234U);
     Q_ALLEGE(QS_INIT((void *)0));
     QS_OBJ_DICTIONARY(&l_clock_tick); // must be called *after* QF_init()
@@ -42,19 +35,6 @@ void BSP_init(void) {
 void BSP_terminate(int16_t result) {
     (void)result;
     QP::QF::stop();
-}
-//............................................................................
-void BSP_displayPhilStat(uint8_t n, char const *stat) {
-    printf("Philosopher %2d is %s\n", (int)n, stat);
-
-    QS_BEGIN(PHILO_STAT, AO_Philo[n]) // application-specific record begin
-        QS_U8(1, n);  // Philosopher number
-        QS_STR(stat); // Philosopher status
-    QS_END()
-}
-//............................................................................
-void BSP_displayPaused(uint8_t paused) {
-    printf("Paused is %s\n", paused ? "ON" : "OFF");
 }
 //............................................................................
 uint32_t BSP_random(void) { // a very cheap pseudo-random-number generator

@@ -2,7 +2,7 @@
 <model version="3.3.0">
  <documentation>Dining Philosopher Problem example with MSM state machines</documentation>
  <framework name="qpcpp"/>
- <package name="Events" stereotype="0x01" namespace="DPP::">
+ <package name="Events" stereotype="0x01">
   <class name="FrameEvt" superclass="qpcpp::QEvt">
    <attribute name="lock_id" type="std::string" visibility="0x00" properties="0x00"/>
    <attribute name="timestamp" type="std::string" visibility="0x00" properties="0x00"/>
@@ -10,11 +10,11 @@
    <attribute name="data" type="std::string" visibility="0x00" properties="0x00"/>
   </class>
  </package>
- <package name="AOs" stereotype="0x02" namespace="DPP::">
+ <package name="AOs" stereotype="0x02">
   <class name="IOMgr" superclass="qpcpp::QMActive">
    <attribute name="m_timeEvt" type="QP::QTimeEvt" visibility="0x02" properties="0x00"/>
    <operation name="IOMgr" type="" visibility="0x00" properties="0x00">
-    <code>  : QMActive(Q_STATE_CAST(&amp;Philo::initial)),
+    <code>  : QMActive(Q_STATE_CAST(&amp;IOMgr::initial)),
     m_timeEvt(this, TIMEOUT_SIG, 0U)</code>
    </operation>
    <statechart>
@@ -31,8 +31,19 @@
   </class>
   <class name="Database" superclass="qpcpp::QMActive">
    <operation name="Database" type="" visibility="0x00" properties="0x00">
-    <code>  : QMActive(Q_STATE_CAST(&amp;Table::initial))</code>
+    <code>  : QMActive(Q_STATE_CAST(&amp;Database::initial))</code>
    </operation>
+   <statechart>
+    <initial target="../1">
+     <initial_glyph conn="3,2,5,1,29,6,-2">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="active">
+     <state_glyph node="2,4,28,38"/>
+    </state>
+    <state_diagram size="80,50"/>
+   </statechart>
   </class>
   <attribute name="AO_iomgr" type="QP::QMActive * const" visibility="0x00" properties="0x00"/>
   <attribute name="AO_database" type="QP::QMActive * const" visibility="0x00" properties="0x00"/>
@@ -41,16 +52,19 @@
   <file name="app.h" codec="UTF-8">
    <text>#ifndef dpp_h
 #define dpp_h
+#include &lt;string&gt;
 
-namespace DPP {
+#include &quot;qpcpp.h&quot;
+
+//namespace DPP {
 
 enum DPPSignals {
     GOT_FRAME_SIG = QP::Q_USER_SIG,
-
+    TIMEOUT_SIG,
     MAX_SIG
 };
 
-} // namespace DPP
+//} // namespace DPP
 
 $declare(Events::FrameEvt)
 
@@ -59,6 +73,26 @@ $declare(AOs::AO_iomgr)
 $declare(AOs::AO_database)
 
 #endif // dpp_h</text>
+  </file>
+  <file name="io_mgr.cpp" codec="UTF-8">
+   <text>#include &quot;app.h&quot;
+
+$declare(AOs::IOMgr)
+
+static IOMgr g_iomgr;
+QP::QMActive * const AO_iomgr = &amp;g_iomgr;
+
+$define(AOs::IOMgr)</text>
+  </file>
+  <file name="database.cpp" codec="UTF-8">
+   <text>#include &quot;app.h&quot;
+
+$declare(AOs::Database)
+
+static Database g_database;
+QP::QMActive * const AO_database = &amp;g_database;
+
+$define(AOs::Database)</text>
   </file>
  </directory>
 </model>
