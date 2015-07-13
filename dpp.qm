@@ -24,7 +24,10 @@
      </initial_glyph>
     </initial>
     <state name="active">
-     <state_glyph node="2,4,34,46"/>
+     <entry>me-&gt;m_timeEvt.armX(BSP_TICKS_PER_SEC, BSP_TICKS_PER_SEC);</entry>
+     <state_glyph node="2,4,34,46">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
     </state>
     <state_diagram size="45,65"/>
    </statechart>
@@ -55,12 +58,14 @@
 #include &lt;string&gt;
 
 #include &quot;qpcpp.h&quot;
+#include &quot;bsp.h&quot;
 
 //namespace DPP {
 
 enum DPPSignals {
     GOT_FRAME_SIG = QP::Q_USER_SIG,
     TIMEOUT_SIG,
+    TERMINATE_SIG,
     MAX_SIG
 };
 

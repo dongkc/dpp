@@ -1,6 +1,5 @@
 #include "qpcpp.h"
-#include "dpp.h"
-#include "bsp.h"
+#include "app.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,7 +9,6 @@
 #include <unistd.h>
 
 //****************************************************************************
-namespace DPP {
 
 Q_DEFINE_THIS_FILE
 
@@ -26,7 +24,6 @@ static uint32_t l_rnd; // random seed
 
 //............................................................................
 void BSP_init(void) {
-    BSP_randomSeed(1234U);
     Q_ALLEGE(QS_INIT((void *)0));
     QS_OBJ_DICTIONARY(&l_clock_tick); // must be called *after* QF_init()
     QS_USR_DICTIONARY(PHILO_STAT);
@@ -36,20 +33,6 @@ void BSP_terminate(int16_t result) {
     (void)result;
     QP::QF::stop();
 }
-//............................................................................
-uint32_t BSP_random(void) { // a very cheap pseudo-random-number generator
-    // "Super-Duper" Linear Congruential Generator (LCG)
-    // LCG(2^32, 3*7*11*13*23, 0, seed)
-    //
-    l_rnd = l_rnd * (3U*7U*11U*13U*23U);
-    return l_rnd >> 8;
-}
-//............................................................................
-void BSP_randomSeed(uint32_t seed) {
-    l_rnd = seed;
-}
-
-} // namespace DPP
 
 //****************************************************************************
 
@@ -66,7 +49,7 @@ void QF::onStartup(void) { // QS startup callback
     tio.c_lflag &= ~(ICANON | ECHO); // disable the canonical mode & echo
     tcsetattr(0, TCSANOW, &tio); // set the new attributes
 
-    QF_setTickRate(DPP::BSP_TICKS_PER_SEC); // set the desired tick rate
+    QF_setTickRate(BSP_TICKS_PER_SEC); // set the desired tick rate
 }
 //............................................................................
 void QF::onCleanup(void) {  // cleanup callback
@@ -77,7 +60,7 @@ void QF::onCleanup(void) {  // cleanup callback
 //............................................................................
 void QF_onClockTick(void) {
 
-    QF::TICK_X(0U, &DPP::l_clock_tick); // process time events at rate 0
+    QF::TICK_X(0U, &l_clock_tick); // process time events at rate 0
 
     struct timeval timeout = { 0 }; // timeout for select()
     fd_set con; // FD set representing the console
@@ -88,20 +71,14 @@ void QF_onClockTick(void) {
         char ch;
         read(0, &ch, 1);
         if (ch == '\33') { // ESC pressed?
-            QF::PUBLISH(Q_NEW(QEvt, DPP::TERMINATE_SIG), &DPP::l_clock_tick);
-        }
-        else if (ch == 'p') {
-            QF::PUBLISH(Q_NEW(QEvt, DPP::PAUSE_SIG), &DPP::l_clock_tick);
-        }
-        else if (ch == 's') {
-            QF::PUBLISH(Q_NEW(QEvt, DPP::SERVE_SIG), &DPP::l_clock_tick);
+            QF::PUBLISH(Q_NEW(QEvt, TERMINATE_SIG), &l_clock_tick);
         }
     }
 }
 //............................................................................
 extern "C" void Q_onAssert(char const Q_ROM * const file, int line) {
     fprintf(stderr, "Assertion failed in %s, line %d", file, line);
-    DPP::BSP_terminate(-1);
+    BSP_terminate(-1);
 }
 
 //----------------------------------------------------------------------------*/

@@ -14,7 +14,7 @@ int main() {
 
     QP::QF::init();  // initialize the framework and the underlying RT kernel
 
-    DPP::BSP_init(); // initialize the BSP
+    BSP_init(); // initialize the BSP
 
     QS_OBJ_DICTIONARY(smlPoolSto);
     QS_OBJ_DICTIONARY(io_queue);
