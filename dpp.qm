@@ -13,6 +13,7 @@
  <package name="AOs" stereotype="0x02">
   <class name="IOMgr" superclass="qpcpp::QMActive">
    <attribute name="m_timeEvt" type="QP::QTimeEvt" visibility="0x02" properties="0x00"/>
+   <attribute name="path" type="std::string" visibility="0x02" properties="0x00"/>
    <operation name="IOMgr" type="" visibility="0x00" properties="0x00">
     <code>  : QMActive(Q_STATE_CAST(&amp;IOMgr::initial)),
     m_timeEvt(this, TIMEOUT_SIG, 0U)</code>
@@ -34,6 +35,42 @@ QS_SIG_DICTIONARY(TERMINATE_SIG,      (void *)0);</action>
     </initial>
     <state name="active">
      <entry>me-&gt;m_timeEvt.armX(BSP_TICKS_PER_SEC, BSP_TICKS_PER_SEC);</entry>
+     <tran trig="TIMEOUT">
+      <action>vector&lt;string&gt; vec;
+iterate(me-&gt;path, vec);
+
+//Timestamp timestamp(LocalDateTime().timestamp());
+string patten(DateTimeFormatter::format(
+    LocalDateTime().timestamp(), &quot;%Y%m%d.bin&quot;));
+
+for (auto&amp; e: vec) {
+    if (!ends_with(e, &quot;.bin&quot;) || ends_with(e, patten)) {
+        continue;
+    }
+
+    File f(e);
+    SharedMemory mem(f, SharedMemory::AM_READ);
+    LockFrame frame;
+    bool err;
+    for (char* ptr = mem.begin(); ptr != mem.end(); ++ptr) {
+        ptr = parse(ptr, mem.end(), frame, err);
+        if (err) {
+            LOG(ERROR) &lt;&lt; &quot;Parse frame error from: &quot; &lt;&lt; e &lt;&lt; endl;
+            break;
+        }
+
+        FrameEvt *pe = Q_NEW(FrameEvt, GOT_FRAME_SIG);
+        pe-&gt;lock_id      = frame.lock_id;
+        pe-&gt;message_id   = frame.message_id;
+        pe-&gt;data         = frame.frame;
+        pe-&gt;timestamp    = frame.timestamp;
+        QP::QF::PUBLISH(pe, me);
+    }
+}</action>
+      <tran_glyph conn="2,10,3,-1,26">
+       <action box="0,-2,22,2"/>
+      </tran_glyph>
+     </tran>
      <state_glyph node="2,4,34,46">
       <entry box="1,2,6,2"/>
      </state_glyph>
@@ -65,9 +102,11 @@ QS_SIG_DICTIONARY(TERMINATE_SIG,      (void *)0);</action>
    <text>#ifndef dpp_h
 #define dpp_h
 #include &lt;string&gt;
+#include &lt;glog/logging.h&gt;
 
 #include &quot;qpcpp.h&quot;
 #include &quot;bsp.h&quot;
+#include &quot;util.h&quot;
 
 //namespace DPP {
 
@@ -89,7 +128,19 @@ $declare(AOs::AO_database)
 #endif // dpp_h</text>
   </file>
   <file name="io_mgr.cpp" codec="UTF-8">
-   <text>#include &quot;app.h&quot;
+   <text>#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;Poco/LocalDateTime.h&gt;
+#include &lt;Poco/DateTimeFormatter.h&gt;
+#include &lt;Poco/SharedMemory.h&gt;
+#include &lt;Poco/File.h&gt;
+#include &lt;boost/algorithm/string.hpp&gt;
+
+#include &quot;app.h&quot;
+
+using namespace std;
+using namespace Poco;
+using namespace boost::algorithm;
 
 $declare(AOs::IOMgr)
 

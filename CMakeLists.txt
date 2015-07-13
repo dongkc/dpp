@@ -18,6 +18,7 @@ ADD_DEFINITIONS(-DQ_SPY)
 
 ADD_EXECUTABLE(gps_importer
   main.cpp
+  util.cpp
   bsp.cpp
   io_mgr.cpp
   database.cpp
@@ -25,7 +26,9 @@ ADD_EXECUTABLE(gps_importer
 
 TARGET_LINK_LIBRARIES(gps_importer
   qp
-pthread)
+  PocoFoundation
+  glog
+  pthread)
 
 SET(QP_SRC
   ${QPCPP}/source/qep_hsm.cpp
