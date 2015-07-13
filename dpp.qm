@@ -84,6 +84,12 @@ for (auto&amp; e: vec) {
    </operation>
    <statechart>
     <initial target="../1">
+     <action>QS_OBJ_DICTIONARY(&amp;g_database);
+
+QS_FUN_DICTIONARY(&amp;Database::initial);
+QS_FUN_DICTIONARY(&amp;Database::active);
+
+QS_SIG_DICTIONARY(GOT_FRAME_SIG, (void*)0);</action>
      <initial_glyph conn="3,2,5,1,29,6,-2">
       <action box="0,-2,10,2"/>
      </initial_glyph>
