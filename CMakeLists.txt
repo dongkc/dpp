@@ -49,3 +49,5 @@ SET(QP_SRC
   ${QP_PORT_DIR}/qf_port.cpp)
 
 ADD_LIBRARY(qp STATIC ${QP_SRC})
+
+ADD_SUBDIRECTORY(test)

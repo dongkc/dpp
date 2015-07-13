@@ -19,6 +19,15 @@
    </operation>
    <statechart>
     <initial target="../1">
+     <action>QS_OBJ_DICTIONARY(&amp;g_iomgr);
+QS_OBJ_DICTIONARY(&amp;g_iomgr.m_timeEvt);
+
+QS_FUN_DICTIONARY(&amp;IOMgr::initial);
+QS_FUN_DICTIONARY(&amp;IOMgr::active);
+
+QS_SIG_DICTIONARY(TIMEOUT_SIG,        (void *)0);
+QS_SIG_DICTIONARY(GOT_FRAME_SIG,      (void *)0);
+QS_SIG_DICTIONARY(TERMINATE_SIG,      (void *)0);</action>
      <initial_glyph conn="2,2,5,1,36,6,-2">
       <action box="0,-2,10,2"/>
      </initial_glyph>

@@ -16,9 +16,6 @@ Q_DEFINE_THIS_FILE
 static uint32_t l_rnd; // random seed
 
 #ifdef Q_SPY
-    enum {
-        PHILO_STAT = QP::QS_USER
-    };
     static uint8_t const l_clock_tick = 0U;
 #endif
 
@@ -26,7 +23,6 @@ static uint32_t l_rnd; // random seed
 void BSP_init(void) {
     Q_ALLEGE(QS_INIT((void *)0));
     QS_OBJ_DICTIONARY(&l_clock_tick); // must be called *after* QF_init()
-    QS_USR_DICTIONARY(PHILO_STAT);
 }
 //............................................................................
 void BSP_terminate(int16_t result) {
@@ -72,6 +68,7 @@ void QF_onClockTick(void) {
         read(0, &ch, 1);
         if (ch == '\33') { // ESC pressed?
             QF::PUBLISH(Q_NEW(QEvt, TERMINATE_SIG), &l_clock_tick);
+            printf("--------\n");
         }
     }
 }
