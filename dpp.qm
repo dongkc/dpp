@@ -37,7 +37,7 @@ QS_SIG_DICTIONARY(TERMINATE_SIG,      (void *)0);</action>
      <entry>me-&gt;m_timeEvt.armX(BSP_TICKS_PER_SEC, BSP_TICKS_PER_SEC);</entry>
      <tran trig="TIMEOUT">
       <action>vector&lt;string&gt; vec;
-iterate(me-&gt;path, vec);
+dir_walk(me-&gt;path, vec);
 
 //Timestamp timestamp(LocalDateTime().timestamp());
 string patten(DateTimeFormatter::format(

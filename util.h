@@ -11,7 +11,7 @@ struct LockFrame
   std::string    frame;
 };
 
-void iterate(const std::string& path, std::vector<std::string>& vec);
+void dir_walk(const std::string& path, std::vector<std::string>& vec);
 
 char* parse(char* begin, char* end, LockFrame& lock_frame, bool& error);
 #endif
