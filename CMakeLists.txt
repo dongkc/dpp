@@ -27,6 +27,8 @@ ADD_EXECUTABLE(gps_importer
 TARGET_LINK_LIBRARIES(gps_importer
   qp
   PocoFoundation
+  PocoData
+  PocoDataMySQL
   glog
   pthread)
 

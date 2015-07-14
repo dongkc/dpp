@@ -79,6 +79,7 @@ for (auto&amp; e: vec) {
    </statechart>
   </class>
   <class name="Database" superclass="qpcpp::QMActive">
+   <attribute name="session" type="std::unique_ptr&lt;Poco::Data::Session&gt;" visibility="0x00" properties="0x00"/>
    <operation name="Database" type="" visibility="0x00" properties="0x00">
     <code>  : QMActive(Q_STATE_CAST(&amp;Database::initial))</code>
    </operation>
@@ -95,7 +96,32 @@ QS_SIG_DICTIONARY(GOT_FRAME_SIG, (void*)0);</action>
      </initial_glyph>
     </initial>
     <state name="active">
-     <state_glyph node="2,4,28,38"/>
+     <entry>me-&gt;session.reset(new Poco::Data::Session(&quot;MySQL&quot;,
+    &quot;host=localhost;port=3306;db=test;user=root;password=dongkai;compress=true;auto-reconnect=true&quot;));
+
+*me-&gt;session &lt;&lt;
+    &quot;CREATE TABLE IF NOT EXISTS gps_data(lock_id VARCHAR(12), timestamp TIMESTAMP, message_id VARCHAR(4), frame blob)&quot;, now;</entry>
+     <tran trig="GOT_FRAME">
+      <action>Statement insert(*me-&gt;session);
+
+string lock_id(    Q_EVT_CAST(FrameEvt)-&gt;lock_id);
+string message_id( Q_EVT_CAST(FrameEvt)-&gt;message_id);
+string timestamp(  Q_EVT_CAST(FrameEvt)-&gt;timestamp);
+string data(       Q_EVT_CAST(FrameEvt)-&gt;data);
+
+insert &lt;&lt; &quot;INSERT INTO gps_data VALUES(?, ?, ?, ?)&quot;,
+          use(lock_id),
+          use(timestamp),
+          use(message_id),
+          use(data);
+insert.execute();</action>
+      <tran_glyph conn="2,10,3,-1,20">
+       <action box="0,-2,15,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="2,4,28,38">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
     </state>
     <state_diagram size="80,50"/>
    </statechart>
@@ -156,7 +182,15 @@ QP::QMActive * const AO_iomgr = &amp;g_iomgr;
 $define(AOs::IOMgr)</text>
   </file>
   <file name="database.cpp" codec="UTF-8">
-   <text>#include &quot;app.h&quot;
+   <text>#include &lt;memory&gt;
+#include &lt;Poco/Data/Session.h&gt;
+#include &lt;Poco/Data/MySQL/Connector.h&gt;
+#include &quot;app.h&quot;
+
+using namespace std;
+using namespace Poco;
+using namespace Poco::Data;
+using namespace Poco::Data::Keywords;
 
 $declare(AOs::Database)
 
