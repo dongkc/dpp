@@ -1,10 +1,41 @@
+#include <Poco/Util/ServerApplication.h>
+#include <iostream>
+
 #include "qpcpp.h"
 #include "app.h"
 #include "bsp.h"
 
 #define MAX_QEVT_NUM 1000
-//............................................................................
-int main() {
+
+using namespace std;
+using namespace Poco;
+using namespace Poco::Util;
+
+class SampleServer: public ServerApplication
+{
+public:
+  SampleServer()
+  {
+  }
+
+  ~SampleServer()
+  {
+  }
+
+protected:
+  void initialize(Application& self)
+  {
+    loadConfiguration();
+    ServerApplication::initialize(self);
+  }
+
+  void uninitialize()
+  {
+    ServerApplication::uninitialize();
+  }
+
+  int main(const ArgVec& args)
+  {
     static QP::QEvt const *io_queue[MAX_QEVT_NUM];
     static QP::QEvt const *process_queue[MAX_QEVT_NUM];
     static QP::QSubscrList subscrSto[MAX_QEVT_NUM];
@@ -32,5 +63,10 @@ int main() {
                     io_queue, Q_DIM(io_queue),
                     (void *)0, 0U);
 
-    return QP::QF::run(); // run the QF application
-}
+    return QP::QF::run();
+  }
+
+private:
+};
+
+POCO_SERVER_MAIN(SampleServer)

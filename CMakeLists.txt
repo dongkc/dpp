@@ -29,6 +29,7 @@ TARGET_LINK_LIBRARIES(gps_importer
   PocoFoundation
   PocoData
   PocoDataMySQL
+  PocoUtil
   glog
   pthread)
 

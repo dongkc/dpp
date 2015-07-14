@@ -1,5 +1,6 @@
+.dpp
+.ycm_extra_conf.pyc
 build
 app.h
 database.cpp
 io_mgr.cpp
-.dpp

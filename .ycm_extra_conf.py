@@ -38,10 +38,10 @@ flags = [
     'c++',
     '-DQ_SPY',
     '-I/home/dongkc/dpp/.',
-    '-I/include',
-    '-I/ports/posix',
-    '-I/qspy/include',
-    '-I/source',
+    '-I/home/dongkc/workspace/qpcpp/include',
+    '-I/home/dongkc/workspace/qpcpp/ports/posix',
+    '-I/home/dongkc/workspace/qpc-qtools/qspy/include',
+    '-I/home/dongkc/workspace/qpcpp/source',
 ]
 
 
