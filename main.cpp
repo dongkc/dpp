@@ -13,6 +13,7 @@ using namespace Poco;
 using namespace Poco::Util;
 
 string g_database_arg;
+string g_data_path;
 
 class SampleServer: public ServerApplication
 {
@@ -65,7 +66,8 @@ protected:
   {
     printProperties("");
     g_database_arg = config().getString("database", "");
-    return 0;
+    g_data_path = config().getString("raw_data_path", "");
+
     return runnning();
   }
 

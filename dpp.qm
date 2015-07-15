@@ -34,7 +34,8 @@ QS_SIG_DICTIONARY(TERMINATE_SIG,      (void *)0);</action>
      </initial_glyph>
     </initial>
     <state name="active">
-     <entry>me-&gt;m_timeEvt.armX(BSP_TICKS_PER_SEC, BSP_TICKS_PER_SEC);</entry>
+     <entry>me-&gt;path = g_data_path;
+me-&gt;m_timeEvt.armX(BSP_TICKS_PER_SEC, BSP_TICKS_PER_SEC);</entry>
      <tran trig="TIMEOUT">
       <action>vector&lt;string&gt; vec;
 dir_walk(me-&gt;path, vec);
@@ -158,6 +159,7 @@ $declare(AOs::AO_iomgr)
 $declare(AOs::AO_database)
 
 extern std::string g_database_arg;
+extern std::string g_data_path;
 #endif // dpp_h</text>
   </file>
   <file name="io_mgr.cpp" codec="UTF-8">
