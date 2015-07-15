@@ -1,4 +1,5 @@
 #include <Poco/Util/ServerApplication.h>
+#include <Poco/Util/AbstractConfiguration.h>
 #include <iostream>
 
 #include "qpcpp.h"
@@ -34,7 +35,38 @@ protected:
     ServerApplication::uninitialize();
   }
 
+  void printProperties(const std::string& base)
+  {
+    AbstractConfiguration::Keys keys;
+    config().keys(base, keys);
+    if (keys.empty()) {
+      if (config().hasProperty(base)) {
+        std::string msg;
+        msg.append(base);
+        msg.append(" = ");
+        msg.append(config().getString(base));
+        LOG(INFO) << msg;
+      }
+    } else {
+      for (auto& key: keys) {
+        std::string fullKey = base;
+        if (!fullKey.empty()) {
+          fullKey += '.';
+        }
+        fullKey.append(key);
+        printProperties(fullKey);
+      }
+    }
+  }
+
   int main(const ArgVec& args)
+  {
+    printProperties("");
+    return 0;
+    return runnning();
+  }
+
+  int runnning()
   {
     static QP::QEvt const *io_queue[MAX_QEVT_NUM];
     static QP::QEvt const *process_queue[MAX_QEVT_NUM];
@@ -42,10 +74,9 @@ protected:
 
     static QF_MPOOL_EL(FrameEvt) smlPoolSto[MAX_QEVT_NUM];
 
+    QP::QF::init();
 
-    QP::QF::init();  // initialize the framework and the underlying RT kernel
-
-    BSP_init(); // initialize the BSP
+    BSP_init();
 
     QS_OBJ_DICTIONARY(smlPoolSto);
     QS_OBJ_DICTIONARY(io_queue);

@@ -36,6 +36,7 @@ import ycm_core
 flags = [
     '-x',
     'c++',
+    '-std=c++11',
     '-DQ_SPY',
     '-I/home/dongkc/dpp/.',
     '-I/home/dongkc/workspace/qpcpp/include',
