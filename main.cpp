@@ -12,6 +12,8 @@ using namespace std;
 using namespace Poco;
 using namespace Poco::Util;
 
+string g_database_arg;
+
 class SampleServer: public ServerApplication
 {
 public:
@@ -62,6 +64,7 @@ protected:
   int main(const ArgVec& args)
   {
     printProperties("");
+    g_database_arg = config().getString("database", "");
     return 0;
     return runnning();
   }

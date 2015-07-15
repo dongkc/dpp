@@ -96,8 +96,8 @@ QS_SIG_DICTIONARY(GOT_FRAME_SIG, (void*)0);</action>
      </initial_glyph>
     </initial>
     <state name="active">
-     <entry>me-&gt;session.reset(new Poco::Data::Session(&quot;MySQL&quot;,
-    &quot;host=localhost;port=3306;db=test;user=root;password=dongkai;compress=true;auto-reconnect=true&quot;));
+     <entry>me-&gt;session.reset(new Poco::Data::Session(&quot;MySQL&quot;, g_database_arg));
+//    &quot;host=localhost;port=3306;db=test;user=root;password=dongkai;compress=true;auto-reconnect=true&quot;));
 
 *me-&gt;session &lt;&lt;
     &quot;CREATE TABLE IF NOT EXISTS gps_data(lock_id VARCHAR(12), timestamp TIMESTAMP, message_id VARCHAR(4), frame blob)&quot;, now;</entry>
@@ -157,6 +157,7 @@ $declare(AOs::AO_iomgr)
 
 $declare(AOs::AO_database)
 
+extern std::string g_database_arg;
 #endif // dpp_h</text>
   </file>
   <file name="io_mgr.cpp" codec="UTF-8">
