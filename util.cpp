@@ -45,10 +45,12 @@ void dir_walk(const std::string& path, std::vector<std::string>& vec)
 //解析一个frame，移动指针到下一个frame的开始，如果出错，设置标志位error
 char* parse(char* begin, char* end, LockFrame& lock_frame, bool& error)
 {
+  error = false;
   char* offset = begin;
 
-  if (*offset != 0xFF) {
-    LOG(ERROR) << "Parse error, not begin with magic id 0xFF";
+  char magic = 0xff;
+  if (*offset != magic) {
+    LOG(ERROR) << "Parse error, not begin with magic id 0xFF: " << to_str(*offset);
     error = true;
     return begin;
   }
@@ -68,8 +70,12 @@ char* parse(char* begin, char* end, LockFrame& lock_frame, bool& error)
   uint16_t len;
   memcpy(&len, offset, 2);
 
-  if (*offset != 0x7E || *(offset + len) != 0x7E) {
-    LOG(ERROR) << "Invalid frame, not begin or end with 0x7E";
+  offset += 2;
+  if (*offset != 0x7E || *(offset + len - 1) != 0x7E) {
+    LOG(ERROR) << "Invalid frame, not begin or end with 0x7E, begin: "
+               << to_str(*offset)
+               << " end: "
+               << to_str(*(offset + len - 1));
     error = true;
     return begin;
   }

@@ -77,7 +77,7 @@ protected:
     static QP::QEvt const *process_queue[MAX_QEVT_NUM];
     static QP::QSubscrList subscrSto[MAX_QEVT_NUM];
 
-    static QF_MPOOL_EL(FrameEvt) smlPoolSto[MAX_QEVT_NUM];
+    static QF_MPOOL_EL(FrameEvts) smlPoolSto[MAX_QEVT_NUM];
 
     QP::QF::init();
 

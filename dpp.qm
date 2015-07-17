@@ -8,6 +8,19 @@
    <attribute name="timestamp" type="std::string" visibility="0x00" properties="0x00"/>
    <attribute name="message_id" type="std::string" visibility="0x00" properties="0x00"/>
    <attribute name="data" type="std::string" visibility="0x00" properties="0x00"/>
+   <operation name="FrameEvt" type="" visibility="0x00" properties="0x02">
+    <parameter name="sig" type="QP::QSignal"/>
+    <code>    :QEvt(sig)
+
+
+</code>
+   </operation>
+  </class>
+  <class name="FrameEvts" superclass="qpcpp::QEvt">
+   <attribute name="lock_id[1000]" type="char" visibility="0x00" properties="0x00"/>
+   <attribute name="timestamp" type="std::string" visibility="0x00" properties="0x00"/>
+   <attribute name="message_id" type="std::string" visibility="0x00" properties="0x00"/>
+   <attribute name="data" type="std::string" visibility="0x00" properties="0x00"/>
   </class>
  </package>
  <package name="AOs" stereotype="0x02">
@@ -35,7 +48,7 @@ QS_SIG_DICTIONARY(TERMINATE_SIG,      (void *)0);</action>
     </initial>
     <state name="active">
      <entry>me-&gt;path = g_data_path;
-me-&gt;m_timeEvt.armX(BSP_TICKS_PER_SEC, BSP_TICKS_PER_SEC);</entry>
+me-&gt;m_timeEvt.armX(BSP_TICKS_PER_SEC, BSP_TICKS_PER_SEC* 60 * 60 *24);</entry>
      <tran trig="TIMEOUT">
       <action>vector&lt;string&gt; vec;
 dir_walk(me-&gt;path, vec);
@@ -53,19 +66,26 @@ for (auto&amp; e: vec) {
     SharedMemory mem(f, SharedMemory::AM_READ);
     LockFrame frame;
     bool err;
-    for (char* ptr = mem.begin(); ptr != mem.end(); ++ptr) {
+    char *ptr = mem.begin();
+    while (ptr &lt; mem.end()) {
+//    for (char* ptr = mem.begin(); ptr != mem.end(); ++ptr) {
         ptr = parse(ptr, mem.end(), frame, err);
         if (err) {
             LOG(ERROR) &lt;&lt; &quot;Parse frame error from: &quot; &lt;&lt; e &lt;&lt; endl;
             break;
         }
 
+
         FrameEvt *pe = Q_NEW(FrameEvt, GOT_FRAME_SIG);
+        LOG(INFO) &lt;&lt; &quot;Frame id: &quot; &lt;&lt; frame.lock_id;
         pe-&gt;lock_id      = frame.lock_id;
+        LOG(INFO) &lt;&lt; &quot;Frame id: &quot; &lt;&lt; frame.lock_id;
+
         pe-&gt;message_id   = frame.message_id;
         pe-&gt;data         = frame.frame;
         pe-&gt;timestamp    = frame.timestamp;
-        QP::QF::PUBLISH(pe, me);
+//        QP::QF::PUBLISH(pe, me);
+        AO_database-&gt;POST(pe, me);
     }
 }</action>
       <tran_glyph conn="2,10,3,-1,26">
@@ -153,6 +173,8 @@ enum DPPSignals {
 //} // namespace DPP
 
 $declare(Events::FrameEvt)
+
+$declare(Events::FrameEvts)
 
 $declare(AOs::AO_iomgr)
 
