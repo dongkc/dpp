@@ -84,8 +84,8 @@ for (auto&amp; e: vec) {
         pe-&gt;message_id   = frame.message_id;
         pe-&gt;data         = frame.frame;
         pe-&gt;timestamp    = frame.timestamp;
-//        QP::QF::PUBLISH(pe, me);
-        AO_database-&gt;POST(pe, me);
+        QP::QF::PUBLISH(pe, me);
+//        AO_database-&gt;POST(pe, me);
     }
 }</action>
       <tran_glyph conn="2,10,3,-1,26">
