@@ -6,7 +6,7 @@
 #include "app.h"
 #include "bsp.h"
 
-#define MAX_QEVT_NUM 1000
+#define MAX_QEVT_NUM 100000
 
 using namespace std;
 using namespace Poco;
