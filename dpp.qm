@@ -123,7 +123,7 @@ QS_SIG_DICTIONARY(GOT_FRAME_SIG, (void*)0);</action>
 //    &quot;host=localhost;port=3306;db=test;user=root;password=dongkai;compress=true;auto-reconnect=true&quot;));
 
 *me-&gt;session &lt;&lt;
-    &quot;CREATE TABLE IF NOT EXISTS gps_data(lock_id VARCHAR(12), timestamp TIMESTAMP, message_id VARCHAR(4), frame blob)&quot;, now;</entry>
+    &quot;CREATE TABLE IF NOT EXISTS gps_data(lock_id VARCHAR(12), timestamp TIMESTAMP, message_id VARCHAR(4), frame blob, primary key(lock_id, timestamp))&quot;, now;</entry>
      <tran trig="GOT_FRAME">
       <action>static int total = 0;
 Statement insert(*me-&gt;session);
@@ -143,10 +143,10 @@ try {
 insert.execute();
 LOG(INFO) &lt;&lt; &quot;Data insert successfully, index: &quot; &lt;&lt; ++total;
 } catch(const std::exception&amp; e) {
-    LOG(ERROR) &lt;&lt; &quot;insert data error: &quot;
-               &lt;&lt; &quot;lock_id: &quot;     &lt;&lt; lock_id
-               &lt;&lt; &quot;message id: &quot;  &lt;&lt; message_id
-               &lt;&lt; &quot;timestamp: &quot;   &lt;&lt; timestamp;
+    LOG(ERROR) &lt;&lt; &quot;insert data error,&quot;
+               &lt;&lt; &quot; lock_id: &quot;     &lt;&lt; lock_id
+               &lt;&lt; &quot; message id: &quot;  &lt;&lt; message_id
+               &lt;&lt; &quot; timestamp: &quot;   &lt;&lt; timestamp;
 }</action>
       <tran_glyph conn="2,10,3,-1,20">
        <action box="0,-2,15,2"/>
